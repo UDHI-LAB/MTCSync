@@ -1,7 +1,9 @@
 import mido
 from timecode import Timecode
 import questionary
+import signal
 import os
+import sys
 
 basepath = os.path.dirname(os.path.abspath(__file__))
 dllspath = os.path.join(basepath, "dlls")
@@ -62,27 +64,52 @@ midi_port = questionary.select(
   choices = mido.get_input_names()
 ).ask() 
 
+m3u_path = questionary.path(
+  "set m3u path",
+  file_filter=lambda path: os.path.splitext(path)[1] == ".m3u"
+).ask()
+
 port = mido.open_input(midi_port)
-timecodes = ["00:00:05:00","00:00:10:00"]
+timecodes = ["00:00:05:00","00:00:20:00"]
+con = True
+is_not_playing = True
 i = 0
-tc = Timecode("30", frames=0)
+tc = Timecode("30", frames=1)
 
-player = mpv.MPV()
+player = mpv.MPV(config="yes", input_default_bindings=True)
 
-player.loadlist("test.m3u")
+@player.on_key_press("CLOSE_WIN")
+def quit():
+  global con
+  print("quit")
+  con = False
+
+@player.event_callback("end-file")
+def endFile(event):
+  global is_not_playing
+  reason = event.as_dict()["reason"].decode(encoding="utf-8")
+  if reason == "eof":
+    player._set_property("pause", True)
+    is_not_playing = True
+
+player.loadlist(m3u_path)
 
 player.playlist_pos = 0
 
 player._set_property("pause", True)
 
-while True:
-  msg = port.receive(block=True)
-  tc = receive_message(tc, msg)
+while con:
+  msg = port.receive(block=False)
+  if msg is not None: tc = receive_message(tc, msg)
 
   if len(timecodes) == i:
     continue
 
   if tc == timecodes[i]:
+    if not is_not_playing:
+      player.playlist_next()
+
     player._set_property("pause", False)
+    is_not_playing = False
     print(f"play at {tc}")
     i += 1
