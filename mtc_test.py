@@ -1,9 +1,7 @@
 import mido
 from timecode import Timecode
 import questionary
-import signal
 import os
-import sys
 
 basepath = os.path.dirname(os.path.abspath(__file__))
 dllspath = os.path.join(basepath, "dlls")
