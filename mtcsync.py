@@ -44,3 +44,5 @@ while player.con:
     player.unpause()
     print(f"play at {tc}")
     i += 1
+
+print("Quit")

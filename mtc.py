@@ -15,16 +15,16 @@ class Decoder:
       total_frames = 1
     return Timecode(fps, frames=total_frames)
 
-  def mtc_decode_quarter_frames(self, frame_pieces):
+  def mtc_decode_quarter_frames(self):
     mtc_bytes = bytearray(4)
-    if len(frame_pieces) < 8:
+    if len(self.quarter_frames) < 8:
       return None
     for piece in range(8):
       mtc_index = 3 - piece//2    # quarter frame pieces are in reverse order of mtc_encode
-      this_frame = frame_pieces[piece]
+      this_frame = self.quarter_frames[piece]
       if this_frame is bytearray or this_frame is list:
         this_frame = this_frame[1]
-        data = this_frame & 15      # ignore the frame_piece marker bits
+      data = this_frame & 15      # ignore the frame_piece marker bits
       if piece % 2 == 0:
         # 'even' pieces came from the low nibble
         # and the first piece is 0, so it's even
@@ -40,7 +40,7 @@ class Decoder:
       if msg.frame_type == 3:
         tc = tc + Timecode("30", frames=1)
       if msg.frame_type == 7:
-        tc = self.mtc_decode_quarter_frames(self.quarter_frames)
+        tc = self.mtc_decode_quarter_frames()
     elif msg.type == "sysex":
       if len(msg.data) == 8 and msg.data[0:4] == (127, 127, 1, 1):
         data = msg.data[4:]

@@ -9,8 +9,8 @@ import mpv
 class MPVEX(mpv.MPV):
   def __init__(self, *extra_mpv_flags, log_handler=None, start_event_thread=True, loglevel=None, **extra_mpv_opts):
     super().__init__(*extra_mpv_flags, log_handler=log_handler, start_event_thread=start_event_thread, loglevel=loglevel, **extra_mpv_opts)
-    self.register_key_binding("CLOSE_WIN", self.q)
-    self.register_event_callback("end-file", self.endf)
+    self.on_key_press("CLOSE_WIN")(self.q)
+    self.register_event_callback(self.handler)
     self.is_playing = True
     self.con = True
 
@@ -25,7 +25,8 @@ class MPVEX(mpv.MPV):
   def q(self):
     self.con = False
 
-  def endf(self, event):
+  def handler(self, event):
+    if event.as_dict()["event"].decode(encoding="utf-8") != "end-file": return
     reason = event.as_dict()["reason"].decode(encoding="utf-8")
     if reason == "eof":
       self.pause()
