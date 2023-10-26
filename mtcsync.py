@@ -1,3 +1,4 @@
+from typing import List
 import mido
 from timecode import Timecode
 import questionary
@@ -8,8 +9,8 @@ import mtc
 
 midi_port = questionary.select(
   "select MIDI port",
-  choices = mido.get_input_names()
-).ask() 
+  choices=mido.get_input_names()
+).ask()
 
 m3u_path = questionary.path(
   "set m3u path",
@@ -17,12 +18,12 @@ m3u_path = questionary.path(
 ).ask()
 
 port = mido.open_input(midi_port)
-timecodes = ["00:00:05:00","00:00:20:00"]
-i = 0
-tc = Timecode("30", frames=1)
+timecodes: List[str] = ["00:00:05:00", "00:00:20:00"]
+i: int = 0
+tc: Timecode = Timecode("30", frames=1)
 
-player = mpvex.MPVEX(config="yes", input_default_bindings=True)
-decoder = mtc.Decoder()
+player: mpvex.MPVEX = mpvex.MPVEX(config="yes", input_default_bindings=True)
+decoder: mtc.Decoder = mtc.Decoder()
 
 player.loadlist(m3u_path)
 
@@ -32,7 +33,8 @@ player.pause()
 
 while player.con:
   msg = port.receive(block=False)
-  if msg is not None: tc = decoder.receive_message(tc, msg)
+  if msg is not None:
+    tc = decoder.receive_message(tc, msg)
 
   if len(timecodes) == i:
     continue
