@@ -9,7 +9,7 @@ import mpv
 class MPVEX(mpv.MPV):
   def __init__(self, *extra_mpv_flags, log_handler=None, start_event_thread=True, loglevel=None, **extra_mpv_opts):
     super().__init__(*extra_mpv_flags, log_handler=log_handler, start_event_thread=start_event_thread, loglevel=loglevel, **extra_mpv_opts)
-    self.on_key_press("CLOSE_WIN")(self.q)
+    self.on_key_press("CLOSE_WIN")(self.close)
     self.register_event_callback(self.handler)
     self.is_playing = True
     self.con = True
@@ -18,11 +18,11 @@ class MPVEX(mpv.MPV):
     self._set_property("pause", True)
     self.is_playing = False
 
-  def unpause(self):
+  def play(self):
     self._set_property("pause", False)
     self.is_playing = True
 
-  def q(self):
+  def close(self):
     self.con = False
 
   def handler(self, event):

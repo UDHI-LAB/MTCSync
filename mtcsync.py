@@ -41,7 +41,7 @@ while player.con:
     if player.is_playing:
       player.playlist_next()
 
-    player.unpause()
+    player.play()
     print(f"play at {tc}")
     i += 1
 

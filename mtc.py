@@ -10,7 +10,6 @@ class Decoder:
     hrs = rhh & 31
     fps = ['24', '25', '29.97', '30'][rateflag]
     total_frames = int(frs + float(fps) * (secs + mins * 60 + hrs * 60 * 60))
-    # total frames must always be an integer above zero
     if total_frames < 1:
       total_frames = 1
     return Timecode(fps, frames=total_frames)
@@ -20,17 +19,14 @@ class Decoder:
     if len(self.quarter_frames) < 8:
       return None
     for piece in range(8):
-      mtc_index = 3 - piece//2    # quarter frame pieces are in reverse order of mtc_encode
+      mtc_index = 3 - piece//2
       this_frame = self.quarter_frames[piece]
       if this_frame is bytearray or this_frame is list:
         this_frame = this_frame[1]
-      data = this_frame & 15      # ignore the frame_piece marker bits
+      data = this_frame & 15
       if piece % 2 == 0:
-        # 'even' pieces came from the low nibble
-        # and the first piece is 0, so it's even
         mtc_bytes[mtc_index] += data
       else:
-        # 'odd' pieces came from the high nibble
         mtc_bytes[mtc_index] += data * 16
     return self.mtc_decode(mtc_bytes)
 
@@ -39,7 +35,7 @@ class Decoder:
       self.quarter_frames[msg.frame_type] = msg.frame_value
       if msg.frame_type == 3:
         tc = tc + Timecode("30", frames=1)
-      if msg.frame_type == 7:
+      elif msg.frame_type == 7:
         tc = self.mtc_decode_quarter_frames()
     elif msg.type == "sysex":
       if len(msg.data) == 8 and msg.data[0:4] == (127, 127, 1, 1):
