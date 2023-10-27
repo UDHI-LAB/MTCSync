@@ -2,7 +2,7 @@
 
 # Overview
 
-MTC(MIDI Time Code)を用いたライブ全体の動機システム
+MTC(MIDI Time Code)を用いたライブ全体の同期システム
 
 # Requirement
 
