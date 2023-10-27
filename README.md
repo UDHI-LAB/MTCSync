@@ -28,7 +28,7 @@ MTC(MIDI Time Code)を用いたライブ全体の同期システム
 
 - [x] MTC decode
 - [x] mpv link
-- [] load timeline
-- [] output MIDI
-- [] setting GUI
-- [] auto stop
+- [ ] load timeline
+- [ ] output MIDI
+- [ ] setting GUI
+- [ ] auto stop
