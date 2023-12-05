@@ -8,13 +8,13 @@ import mtc
 
 
 midi_port = questionary.select(
-  "select MIDI port",
-  choices=mido.get_input_names()
+    "select MIDI port",
+    choices=mido.get_input_names()
 ).ask()
 
 m3u_path = questionary.path(
-  "set m3u path",
-  file_filter=lambda path: os.path.splitext(path)[1] == ".m3u"
+    "set m3u path",
+    file_filter=lambda path: os.path.splitext(path)[1] == ".m3u"
 ).ask()
 
 port = mido.open_input(midi_port)
@@ -32,19 +32,19 @@ player.playlist_pos = 0
 player.pause()
 
 while player.con:
-  msg = port.receive(block=False)
-  if msg is not None:
-    tc = decoder.receive_message(tc, msg)
+    msg = port.receive(block=False)
+    if msg is not None:
+        tc = decoder.receive_message(tc, msg)
 
-  if len(timecodes) == i:
-    continue
+    if len(timecodes) == i:
+        continue
 
-  if tc == timecodes[i]:
-    if player.is_playing:
-      player.playlist_next()
+    if tc == timecodes[i]:
+        if player.is_playing:
+            player.playlist_next()
 
-    player.play()
-    print(f"play at {tc}")
-    i += 1
+        player.start()
+        print(f"play at {tc}")
+        i += 1
 
 print("Quit")
