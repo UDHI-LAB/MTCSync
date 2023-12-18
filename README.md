@@ -39,3 +39,6 @@ MTCを送信できるアプリケーションこのデータを用いて同期�
 - [ ] output MIDI
 - [ ] setting GUI
 - [ ] auto stop
+
+# License
+[MIT License](LICENSE.md)
