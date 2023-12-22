@@ -9,6 +9,10 @@ import mpvex
 import mtc
 
 
+def file_filter(path: str,ext: str) -> bool:
+    return os.path.splitext(path)[1] == ext or not os.path.splitext(path)[1]
+
+
 midi_port = questionary.select(
     "select MIDI in port",
     choices=mido.get_input_names()
@@ -16,12 +20,12 @@ midi_port = questionary.select(
 
 m3u_path = questionary.path(
     "set m3u path",
-    #file_filter=lambda path: os.path.splitext(path)[1] == ".m3u"
+    file_filter=lambda path: file_filter(path, ".m3u")
 ).ask()
 
 timeline_path = questionary.path(
     "set timeline path",
-    #file_filter=lambda path: os.path.splitext(path)[1] == ".json"
+    file_filter=lambda path: file_filter(path, ".json")
 ).ask()
 
 with open(timeline_path, "r", encoding="utf-8") as f:
