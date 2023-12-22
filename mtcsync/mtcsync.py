@@ -42,8 +42,8 @@ timecodes: List[str] = [t["time"] for t in timeline if config_id in t.keys()]
 
 print(timecodes)
 
-i: int = 0
 tc: Timecode = Timecode("30", frames=1)
+btc: Timecode = Timecode("30", frames=1)
 
 player: mpvex.MPVEX = mpvex.MPVEX(config="yes", input_default_bindings=True)
 decoder: mtc.Decoder = mtc.Decoder()
@@ -59,16 +59,17 @@ while player.con:
     if msg is not None:
         tc = decoder.receive_message(tc, msg)
 
-    if len(timecodes) == i:
+    if btc == tc:
         continue
 
+    if tc in timecodes:
+        pos = timecodes.index(tc)
 
-    if tc == timecodes[i]:
-        if player.is_playing:
-            player.playlist_next()
+        player.playlist_pos = pos
 
         player.resume()
         print(f"play at {tc}")
-        i += 1
+
+    btc = tc
 
 print("Quit")
