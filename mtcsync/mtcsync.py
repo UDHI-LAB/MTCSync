@@ -34,13 +34,9 @@ config_id = questionary.select(
     choices=[questionary.Choice(title=f"{c['id']} {c['name']}",value=f"{c['id']}") for c in timeline_json["config"]]
 ).ask()
 
-print(config_id)
-
 port = mido.open_input(midi_port)
 timeline = timeline_json["timeline"]
 timecodes: List[str] = [t["time"] for t in timeline if config_id in t.keys()]
-
-print(timecodes)
 
 tc: Timecode = Timecode("30", frames=1)
 btc: Timecode = Timecode("30", frames=1)
@@ -53,6 +49,8 @@ player.loadlist(m3u_path)
 player.playlist_pos = 0
 
 player.pause()
+
+print("Ready")
 
 while player.con:
     msg = port.receive(block=False)
