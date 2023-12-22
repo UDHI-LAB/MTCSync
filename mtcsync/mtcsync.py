@@ -68,6 +68,7 @@ while player.con:
         pos = timecodes.index(tc)
 
         player.playlist_pos = pos
+        print(f"{timeline[pos][config_id]}") #MIDIモードの場合はここがMIDI messageになる
 
         player.resume()
         print(f"play at {tc}")
