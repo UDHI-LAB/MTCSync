@@ -40,7 +40,9 @@ config_id = questionary.select(
 
 port = mido.open_input(midi_port)
 timeline = timeline_json["timeline"]
-timecodes: List[str] = [t["time"] for t in timeline if config_id in t.keys()]
+playlist = timeline_json["playlist"]
+myconfig = [c for c in timeline_json["config"] if c["id"] == config_id][0]
+timecodes: List[str] = [t["time"] for t in timeline]
 
 tc: Timecode = Timecode("30", frames=1)
 btc: Timecode = Timecode("30", frames=1)
@@ -68,10 +70,20 @@ while player.con:
         pos = timecodes.index(tc)
 
         player.playlist_pos = pos
-        print(f"{timeline[pos][config_id]}") #MIDIモードの場合はここがMIDI messageになる
 
-        player.resume()
-        print(f"play at {tc}")
+        #現在の楽曲の表示
+        print(f"{playlist[pos]} play now")
+
+        #タイムラインに自身の指示がない場合はスキップ
+        if timeline[pos].get(config_id) is None:
+            continue
+
+        #MIDIモードの場合はここがMIDI messageになる
+        print(f"{timeline[pos][config_id]}")
+
+        if myconfig["output"] == "player":
+            player.resume()
+            print(f"play at {tc}")
 
     btc = tc
 
