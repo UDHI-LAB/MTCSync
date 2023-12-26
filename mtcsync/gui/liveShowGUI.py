@@ -1,19 +1,14 @@
 import customtkinter
 
-class MyCheckboxFrame(customtkinter.CTkFrame):
-    def __init__(self, master):
-        super().__init__(master)
 
-        self.checkbox_1 = customtkinter.CTkCheckBox(self, text="checkbox 1")
-        self.checkbox_1.grid(row=0, column=0, padx=10, pady=(10, 0), sticky="w")
-        self.checkbox_2 = customtkinter.CTkCheckBox(self, text="checkbox 2")
-        self.checkbox_2.grid(row=1, column=0, padx=10, pady=(10, 0), sticky="w")
 
 class LiveClockFrame(customtkinter.CTkFrame):
     def __init__(self, master):
         super().__init__(master)
 
         self.liveMasterClock = customtkinter.CTkLabel(self, text="00:00:00", font=("Helvetica", 20))
+        self.liveMasterClock.grid(row=0, column=1, rowspan=2 )
+
 
 class App(customtkinter.CTk):
     def __init__(self):
@@ -21,28 +16,43 @@ class App(customtkinter.CTk):
 
         self.title("Midi Time Code Sync")
         self.minsize(400, 180)
-        self.geometry("400x180")
-        self.grid_columnconfigure(3, weight=1)
+        self.geometry("1280x720")
+
+        self.grid_columnconfigure(5, weight=1)
         self.grid_rowconfigure(4, weight=1)
-
-        #self.checkbox_frame = MyCheckboxFrame(self)
-        #self.checkbox_frame.grid(row=0, column=0, padx=0, pady=(10, 0), sticky="nsw")
+        
 
 
-        #self.live_clock_frame = LiveClockFrame(self)
-        #self.live_clock_frame.grid(row=0, column=0, padx=10, pady=(10, 0))
-        #self.live_clock_frame2 = LiveClockFrame(self)
-        #self.live_clock_frame.grid(row=1, column=0, padx=10, pady=(10, 0))
-        #self.live_clock_frame2 = LiveClockFrame(self)
-        #self.live_clock_frame.grid(row=2, column=0, padx=10, pady=(10, 0))
-        #self.live_clock_frame3 = LiveClockFrame(self)
-        #self.live_clock_frame3.grid(row=3, column=0, padx=10, pady=(10, 0))
-        #self.live_clock_frame4 = LiveClockFrame(self)
-        #self.live_clock_frame4.grid(row=0, column=4, padx=10, pady=(10, 0))
+        ## ガイド
+        self.label00 = customtkinter.CTkLabel(self, text="( 0 0 )", font=("Helvetica", 20)).grid(row=0, column=0, padx=10, pady=(10, 0))
+        self.label01 = customtkinter.CTkLabel(self, text="( 0 1 )", font=("Helvetica", 20)).grid(row=0, column=1, padx=10, pady=(10, 0))
+        self.label02 = customtkinter.CTkLabel(self, text="( 0 2 )", font=("Helvetica", 20)).grid(row=0, column=2, padx=10, pady=(10, 0))
+        self.label03 = customtkinter.CTkLabel(self, text="( 0 3 )", font=("Helvetica", 20)).grid(row=0, column=3, padx=10, pady=(10, 0))
+
+        self.label10 = customtkinter.CTkLabel(self, text="( 1 0 )", font=("Helvetica", 20)).grid(row=1, column=0, padx=10, pady=(10, 0))
+        self.label11 = customtkinter.CTkLabel(self, text="( 1 1 )", font=("Helvetica", 20)).grid(row=1, column=1, padx=10, pady=(10, 0))
+        self.label12 = customtkinter.CTkLabel(self, text="( 1 2 )", font=("Helvetica", 20)).grid(row=1, column=2, padx=10, pady=(10, 0))
+        self.label13 = customtkinter.CTkLabel(self, text="( 1 3 )", font=("Helvetica", 20)).grid(row=1, column=3, padx=10, pady=(10, 0))
+
+        self.label20 = customtkinter.CTkLabel(self, text="( 2 0 )", font=("Helvetica", 20)).grid(row=2, column=0, padx=10, pady=(10, 0))
+        self.label21 = customtkinter.CTkLabel(self, text="( 2 1 )", font=("Helvetica", 20)).grid(row=2, column=1, padx=10, pady=(10, 0))
+        self.label22 = customtkinter.CTkLabel(self, text="( 2 2 )", font=("Helvetica", 20)).grid(row=2, column=2, padx=10, pady=(10, 0))
+        self.label23 = customtkinter.CTkLabel(self, text="( 2 3 )", font=("Helvetica", 20)).grid(row=2, column=3, padx=10, pady=(10, 0))
+
+        self.label30 = customtkinter.CTkLabel(self, text="( 3 0 )", font=("Helvetica", 20)).grid(row=3, column=0, padx=10, pady=(10, 0))
+        self.label31 = customtkinter.CTkLabel(self, text="( 3 1 )", font=("Helvetica", 20)).grid(row=3, column=1, padx=10, pady=(10, 0))
+        self.label32 = customtkinter.CTkLabel(self, text="( 3 2 )", font=("Helvetica", 20)).grid(row=3, column=2, padx=10, pady=(10, 0))
+        self.label33 = customtkinter.CTkLabel(self, text="( 3 3 )", font=("Helvetica", 20)).grid(row=3, column=3, padx=10, pady=(10, 0))
+        # ------------------------------
+
+        # Que List
 
 
-        self.label1 = customtkinter.CTkLabel(self, text="my label", font=("Helvetica", 20))
-        self.label1 = customtkinter.CTkLabel(self, text="my label", font=("Helvetica", 20))
+        # Live Clock
+
+        self.live_clock_frame = LiveClockFrame(self)
+        self.live_clock_frame.grid(row=0, column=1, columnspan=2, rowspan=2, padx=10, pady=10, sticky="nsw")
+
 
     def button_callback(self):
         print("button pressed")
