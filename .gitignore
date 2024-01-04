@@ -163,3 +163,5 @@ cython_debug/
 test.*
 .vscode/*
 *.mp4
+poetry.lock
+.python-version
