@@ -13,7 +13,7 @@ class MPVEX(mpv.MPV):
         self.on_key_press("CLOSE_WIN")(self.close)
         self.register_event_callback(self.handler)
         self.is_playing: bool = False
-        self.con: bool = True
+        self.is_active: bool = True
 
     def play(self, filename):
         self.is_playing = True
@@ -32,7 +32,7 @@ class MPVEX(mpv.MPV):
         self.is_playing = True
 
     def close(self):
-        self.con = False
+        self.is_active = False
 
     def handler(self, event):
         if event.as_dict()["event"].decode(encoding="utf-8") != "end-file":

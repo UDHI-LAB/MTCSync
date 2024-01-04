@@ -1,4 +1,3 @@
-from typing import List
 import mido
 from timecode import Timecode
 import questionary
@@ -13,36 +12,47 @@ def file_filter(path: str,ext: str) -> bool:
     return os.path.splitext(path)[1] == ext or not os.path.splitext(path)[1]
 
 
-midi_port = questionary.select(
-    "select MIDI in port",
-    choices=mido.get_input_names()
+answers: dict[str, str, str] = questionary.form(
+    midi_port = questionary.select(
+        "select MIDI in port",
+        choices=mido.get_input_names()
+    ),
+    m3u_path = questionary.path(
+        "set m3u path",
+        file_filter=lambda path: file_filter(path, ".m3u")
+    ),
+    timeline_path = questionary.path(
+        "set timeline path",
+        file_filter=lambda path: file_filter(path, ".json")
+    )
 ).ask()
 
-m3u_path = questionary.path(
-    "set m3u path",
-    file_filter=lambda path: file_filter(path, ".m3u")
-).ask()
+if not answers:
+    exit()
 
-timeline_path = questionary.path(
-    "set timeline path",
-    file_filter=lambda path: file_filter(path, ".json")
-).ask()
+with open(answers["timeline_path"], "r", encoding="utf-8") as f:
+    text: str = f.read()
+re_text: str = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)
+timeline_json: dict = json.loads(re_text)
 
-with open(timeline_path, "r", encoding="utf-8") as f:
-    text = f.read()
-re_text = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)
-timeline_json = json.loads(re_text)
-
-config_id = questionary.select(
+#質問内容の取得にファイルオープンが必要なのでここで行う
+config_id: str = questionary.select(
     "select machine id",
     choices=[questionary.Choice(title=f"{c['id']} {c['name']}",value=f"{c['id']}") for c in timeline_json["config"]]
 ).ask()
 
-port = mido.open_input(midi_port)
-timeline = timeline_json["timeline"]
-playlist = timeline_json["playlist"]
-myconfig = [c for c in timeline_json["config"] if c["id"] == config_id][0]
-timecodes: List[str] = [t["time"] for t in timeline]
+if not config_id:
+    exit()
+
+port = mido.open_input(answers["midi_port"])
+timeline: list[dict]  = timeline_json["timeline"]
+
+playlist: list[dict] = timeline_json["playlist"]
+playlist_timeline: list[str] = [p["time"] for p in playlist]
+playlist_names: list[str] = [p["name"] for p in playlist]
+
+myconfig: dict = [c for c in timeline_json["config"] if c["id"] == config_id][0]
+timecodes: list[str] = [t["time"] for t in timeline]
 
 tc: Timecode = Timecode("30", frames=1)
 btc: Timecode = Timecode("30", frames=1)
@@ -50,7 +60,7 @@ btc: Timecode = Timecode("30", frames=1)
 player: mpvex.MPVEX = mpvex.MPVEX(config="yes", input_default_bindings=True)
 decoder: mtc.Decoder = mtc.Decoder()
 
-player.loadlist(m3u_path)
+player.loadlist(answers["m3u_path"])
 
 player.playlist_pos = 0
 
@@ -58,7 +68,7 @@ player.pause()
 
 print("Ready")
 
-while player.con:
+while player.is_active:
     msg = port.receive(block=False)
     if msg is not None:
         tc = decoder.receive_message(tc, msg)
@@ -66,13 +76,16 @@ while player.con:
     if btc == tc:
         continue
 
+    if tc in playlist_timeline:
+        pos = playlist_timeline.index(tc)
+
+        #現在の楽曲の表示
+        print(f"{playlist_names[pos]} is now")
+
     if tc in timecodes:
         pos = timecodes.index(tc)
 
         player.playlist_pos = pos
-
-        #現在の楽曲の表示
-        print(f"{playlist[pos]} play now")
 
         #タイムラインに自身の指示がない場合はスキップ
         if timeline[pos].get(config_id) is None:
