@@ -11,9 +11,11 @@ class MPVEX(mpv.MPV):
         super().__init__(*extra_mpv_flags, log_handler=log_handler,
                          start_event_thread=start_event_thread, loglevel=loglevel, **extra_mpv_opts)
         self.on_key_press("CLOSE_WIN")(self.close)
+        self.on_key_press("f")(self.toggle_fullscreen)
         self.register_event_callback(self.handler)
         self.is_playing: bool = False
         self.is_active: bool = True
+        self.is_fullscreen: bool = False
 
     def play(self, filename):
         self.is_playing = True
@@ -30,6 +32,14 @@ class MPVEX(mpv.MPV):
     def resume(self):
         self._set_property("pause", False)
         self.is_playing = True
+
+    def toggle_fullscreen(self):
+        if self.is_fullscreen:
+            self._set_property("fullscreen", False)
+        else:
+            self._set_property("fullscreen", True)
+
+        self.is_fullscreen = not self.is_fullscreen
 
     def close(self):
         self.is_active = False
