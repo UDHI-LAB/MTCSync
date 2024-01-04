@@ -55,7 +55,6 @@ myconfig: dict = [c for c in timeline_json["config"] if c["id"] == config_id][0]
 timecodes: list[str] = [t["time"] for t in timeline]
 
 tc: Timecode = Timecode("30", frames=1)
-btc: Timecode = Timecode("30", frames=1)
 
 player: mpvex.MPVEX = mpvex.MPVEX(config="yes", input_default_bindings=True)
 decoder: mtc.Decoder = mtc.Decoder()
@@ -72,8 +71,7 @@ while player.is_active:
     msg = port.receive(block=False)
     if msg is not None:
         tc = decoder.receive_message(tc, msg)
-
-    if btc == tc:
+    else:
         continue
 
     if tc in playlist_timeline:
@@ -97,7 +95,5 @@ while player.is_active:
         if myconfig["output"] == "player":
             player.resume()
             print(f"play at {tc}")
-
-    btc = tc
 
 print("Quit")
