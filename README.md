@@ -6,36 +6,26 @@ MTC(MIDI Time Code)を用いたライブ全体の同期システム
 
 # Requirement
 
-[MTCsender](https://www.styletronix.net/Software/MTC/Default.aspx)
-MTCを送信できるアプリケーションこのデータを用いて同期を行う
+MTC 送信ツール  
+(Recommended [MTCsender](https://www.styletronix.net/Software/MTC/Default.aspx))
 
-[loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html)
-ローカルPC内でMIDI信号をループバックできるアプリケーション
-照明操作やVJアプリの対応はこのアプリケーションを用いて行う
+MIDI ループバックツール(照明等操作用)  
+(Recommended [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html))
 
-## macOS
-- libmpv.so
-- mido
-- python-rtmidi(requirement mido)
-- timecode
-- questionary
-
-## Windows
-- libmpv.dll
-- mido
-- python-rtmidi(requirement mido)
-- timecode
-- questionary
+libmpv
 
 # Usage
 
-```# py(thon) mtcsync.py```
+```# poetry run py(thon) mtcsync.py```
 
 # Features
 
 - [x] MTC decode
 - [x] mpv link
-- [ ] load timeline
+- [x] load timeline
+- [ ] support full screen
+- [ ] check timeline
+- [ ] timeline create tool
 - [ ] output MIDI
 - [ ] setting GUI
 - [ ] auto stop
