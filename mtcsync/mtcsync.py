@@ -56,14 +56,18 @@ timecodes: list[str] = [t["time"] for t in timeline]
 
 tc: Timecode = Timecode("30", frames=1)
 
-player: mpvex.MPVEX = mpvex.MPVEX(config="yes", input_default_bindings=True)
+player: mpvex.MPVEX = mpvex.MPVEX(
+    config="yes",
+    input_builtin_bindings=False,
+    pause=True,
+    idle=True
+)
+
 decoder: mtc.Decoder = mtc.Decoder()
 
 player.loadlist(answers["m3u_path"])
 
 player.playlist_pos = 0
-
-player.pause()
 
 print("Ready")
 
