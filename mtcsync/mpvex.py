@@ -2,7 +2,12 @@ import os
 
 basepath: str = os.path.dirname(os.path.abspath(__file__))
 dllspath: str = os.path.join(basepath, "lib")
-os.environ["PATH"] = dllspath + os.pathsep + os.environ["PATH"]
+
+if os.name == "nt":
+    os.environ["PATH"] = dllspath + os.pathsep + os.environ.get("PATH", "")
+else:
+    os.environ["DYLD_LIBRARY_PATH"] = dllspath + os.pathsep + os.environ.get("DYLD_LIBRARY_PATH", "")
+
 
 import mpv
 
