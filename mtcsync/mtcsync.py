@@ -11,6 +11,12 @@ import mtc
 def file_filter(path: str,ext: str) -> bool:
     return os.path.splitext(path)[1] == ext or not os.path.splitext(path)[1]
 
+def check_playlist(player: mpvex.MPVEX):
+    if (none_files := [p["filename"] for p in player.playlist if not os.path.isfile(p["filename"])]):
+        print("warning: some files are not found")
+        print("\n".join(none_files))
+        exit(1)
+
 if not (midi_names := mido.get_input_names()):
     print("no MIDI port ;;")
     exit(1)
@@ -35,6 +41,7 @@ if not answers:
 
 with open(answers["timeline_path"], "r", encoding="utf-8") as f:
     text: str = f.read()
+
 re_text: str = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)
 timeline_json: dict = json.loads(re_text)
 
@@ -59,6 +66,8 @@ timecodes: list[str] = [t["time"] for t in timeline]
 
 tc: Timecode = Timecode("30", frames=1)
 
+decoder: mtc.Decoder = mtc.Decoder()
+
 player: mpvex.MPVEX = mpvex.MPVEX(
     config="yes",
     input_builtin_bindings=False,
@@ -66,9 +75,9 @@ player: mpvex.MPVEX = mpvex.MPVEX(
     idle=True
 )
 
-decoder: mtc.Decoder = mtc.Decoder()
-
 player.loadlist(answers["m3u_path"])
+
+check_playlist(player=player)
 
 player.playlist_pos = 0
 
