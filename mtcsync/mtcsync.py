@@ -83,18 +83,15 @@ player.playlist_pos = 0
 
 print("Ready")
 
+before_tc: Timecode|None = None
+
 while player.is_active:
     msg = port.receive(block=False)
     if msg is not None:
         tc = decoder.receive_message(tc, msg)
-    else:
+
+    if tc == before_tc:
         continue
-
-    if tc in playlist_timeline:
-        pos = playlist_timeline.index(tc)
-
-        #現在の楽曲の表示
-        print(f"{playlist_names[pos]} is now")
 
     if tc in timecodes:
         pos = timecodes.index(tc)
@@ -111,5 +108,13 @@ while player.is_active:
         if myconfig["output"] == "player":
             player.resume()
             print(f"play at {tc}")
+
+    if tc in playlist_timeline:
+        pos = playlist_timeline.index(tc)
+
+        #現在の楽曲の表示
+        print(f"{playlist_names[pos]} is now")
+
+    before_tc = tc
 
 print("Quit")
