@@ -23,7 +23,7 @@ libmpv
 - [x] MTC decode
 - [x] mpv link
 - [x] load timeline
-- [ ] support full screen
+- [x] support full screen
 - [ ] check timeline
 - [ ] timeline create tool
 - [ ] output MIDI
