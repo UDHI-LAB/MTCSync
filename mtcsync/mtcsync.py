@@ -11,11 +11,14 @@ import mtc
 def file_filter(path: str,ext: str) -> bool:
     return os.path.splitext(path)[1] == ext or not os.path.splitext(path)[1]
 
+if not (midi_names := mido.get_input_names()):
+    print("no MIDI port ;;")
+    exit(1)
 
 answers: dict[str, str, str] = questionary.form(
     midi_port = questionary.select(
         "select MIDI in port",
-        choices=mido.get_input_names()
+        choices=midi_names
     ),
     m3u_path = questionary.path(
         "set m3u path",
