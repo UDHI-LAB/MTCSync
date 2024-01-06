@@ -39,7 +39,7 @@ answers: dict[str, str, str] = questionary.form(
 if not answers:
     exit()
 
-with open(answers["timeline_path"], "r", encoding="utf-8") as f:
+with open(os.path.expanduser(answers["timeline_path"]), "r", encoding="utf-8") as f:
     text: str = f.read()
 
 re_text: str = re.sub(r'/\*[\s\S]*?\*/|//.*', '', text)
@@ -75,7 +75,7 @@ player: mpvex.MPVEX = mpvex.MPVEX(
     idle=True
 )
 
-player.loadlist(answers["m3u_path"])
+player.loadlist(os.path.expanduser(answers["m3u_path"]))
 
 check_playlist(player=player)
 
