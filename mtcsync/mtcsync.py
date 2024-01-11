@@ -8,8 +8,8 @@ import mpvex
 import mtc
 
 
-def file_filter(path: str,ext: str) -> bool:
-    return os.path.splitext(path)[1] == ext or not os.path.splitext(path)[1]
+def file_filter(path: str,ext: list[str]) -> bool:
+    return os.path.splitext(path)[1] in ext or not os.path.splitext(path)[1]
 
 def check_playlist(player: mpvex.MPVEX):
     if (none_files := [p["filename"] for p in player.playlist if not os.path.isfile(p["filename"])]):
@@ -28,11 +28,11 @@ answers: dict[str, str, str] = questionary.form(
     ),
     m3u_path = questionary.path(
         "set m3u path",
-        file_filter=lambda path: file_filter(path, ".m3u")
+        file_filter=lambda path: file_filter(path, [".m3u", ".m3u8"])
     ),
     timeline_path = questionary.path(
         "set timeline path",
-        file_filter=lambda path: file_filter(path, ".json")
+        file_filter=lambda path: file_filter(path, [".json", ".jsonc"])
     )
 ).ask()
 
