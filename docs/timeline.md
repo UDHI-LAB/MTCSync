@@ -1,6 +1,6 @@
 # MTCSync 統合シナリオファイル
 
-ファイル形式はjsonもしくはjsoncである
+ファイル形式はjsonもしくはjsoncである  
 
 ```jsonc
 {
