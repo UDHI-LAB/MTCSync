@@ -72,7 +72,8 @@ player: mpvex.MPVEX = mpvex.MPVEX(
     config="yes",
     input_builtin_bindings=False,
     pause=True,
-    idle=True
+    idle=True,
+    keep_open=True
 )
 
 player.loadlist(os.path.expanduser(answers["m3u_path"]))
